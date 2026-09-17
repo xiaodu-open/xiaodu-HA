@@ -1,0 +1,44 @@
+{
+  "config": {
+    "step": {
+      "pick_implementation": {
+        "title": "Authenticate XiaoDu"
+      }
+    },
+    "abort": {
+      "already_configured": "Account is already configured",
+      "authorize_url_timeout": "Timeout generating authorize URL.",
+      "missing_configuration": "The component is not configured. Please follow the documentation.",
+      "no_url_available": "No URL available. Please check the Home Assistant external URL configuration.",
+      "oauth_error": "Received invalid token data.",
+      "oauth_failed": "Error while obtaining access token.",
+      "oauth_timeout": "Timeout resolving OAuth token.",
+      "oauth_unauthorized": "OAuth authorization error while obtaining access token.",
+      "reauth_successful": "Re-authentication was successful.",
+      "user_rejected_authorize": "Account linking rejected: {error}"
+    },
+    "create_entry": {
+      "default": "Successfully authenticated with XiaoDu."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "temperature": { "name": "Temperature" },
+      "humidity": { "name": "Humidity" },
+      "target_humidity": { "name": "Target humidity" },
+      "pm25": { "name": "PM2.5" },
+      "pm10": { "name": "PM10" },
+      "hcho": { "name": "Formaldehyde" },
+      "tvoc": { "name": "TVOC" },
+      "air_pressure": { "name": "Air pressure" },
+      "weight": { "name": "Weight" },
+      "impedance": { "name": "Impedance" },
+      "bmi": { "name": "BMI" },
+      "body_fat": { "name": "Body fat" },
+      "body_water": { "name": "Body water" },
+      "muscle_mass": { "name": "Muscle mass" },
+      "battery": { "name": "Battery" },
+      "device_state": { "name": "Device state" }
+    }
+  }
+}

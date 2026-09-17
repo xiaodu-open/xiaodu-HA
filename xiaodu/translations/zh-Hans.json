@@ -1,0 +1,44 @@
+{
+  "config": {
+    "step": {
+      "pick_implementation": {
+        "title": "授权 XiaoDu"
+      }
+    },
+    "abort": {
+      "already_configured": "该账号已配置",
+      "authorize_url_timeout": "生成授权链接超时。",
+      "missing_configuration": "集成尚未配置，请参考文档。",
+      "no_url_available": "无可用地址。请检查 Home Assistant 的外部地址配置。",
+      "oauth_error": "收到无效的 token 数据。",
+      "oauth_failed": "获取 access token 时出错。",
+      "oauth_timeout": "解析 OAuth token 超时。",
+      "oauth_unauthorized": "获取 access token 时发生 OAuth 授权错误。",
+      "reauth_successful": "重新授权成功。",
+      "user_rejected_authorize": "账号授权被拒绝：{error}"
+    },
+    "create_entry": {
+      "default": "已成功完成小度授权。"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "temperature": { "name": "温度" },
+      "humidity": { "name": "湿度" },
+      "target_humidity": { "name": "目标湿度" },
+      "pm25": { "name": "PM2.5" },
+      "pm10": { "name": "PM10" },
+      "hcho": { "name": "甲醛" },
+      "tvoc": { "name": "TVOC" },
+      "air_pressure": { "name": "气压" },
+      "weight": { "name": "体重" },
+      "impedance": { "name": "阻抗" },
+      "bmi": { "name": "BMI" },
+      "body_fat": { "name": "体脂率" },
+      "body_water": { "name": "体水率" },
+      "muscle_mass": { "name": "肌肉量" },
+      "battery": { "name": "电量" },
+      "device_state": { "name": "设备状态" }
+    }
+  }
+}

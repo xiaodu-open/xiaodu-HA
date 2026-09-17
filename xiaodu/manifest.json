@@ -1,0 +1,9 @@
+{
+  "domain": "xiaodu",
+  "name": "XiaoDu",
+  "version": "3.2.1",
+  "config_flow": true,
+  "iot_class": "cloud_polling",
+  "integration_type": "hub",
+  "requirements": []
+}
