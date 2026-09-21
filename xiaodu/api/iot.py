@@ -52,6 +52,9 @@ class XiaoDuIotClient:
         self._token_provider = token_provider
 
     async def _request(self, payload: dict[str, Any]) -> dict[str, Any]:
+        # 必须在 try 之外取 token：token 刷新失败抛出的 OAuth2TokenRequestError 是
+        # ClientError 子类，放进 try 会被转成 XiaoDuConnectionError，
+        # coordinator 就无法识别「需要重新授权」，只会无限重试。
         token = await self._token_provider()
         headers = {
             "Content-Type": "application/json",

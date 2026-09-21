@@ -4,6 +4,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
+from homeassistant.config_entries import SOURCE_REAUTH
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import config_entry_oauth2_flow
 
@@ -39,7 +40,18 @@ class OAuth2FlowHandler(
         return await super().async_step_user(user_input)
 
     async def async_oauth_create_entry(self, data: dict[str, Any]) -> FlowResult:
-        """OAuth 成功后创建配置条目。"""
+        """OAuth 成功后写入配置条目。
+
+        重新授权时必须更新原条目而不是新建：基类默认只会 async_create_entry，
+        那样旧条目会带着失效的 token 继续报错，并多出一个重复条目重复轮询。
+
+        不设 unique_id：token 响应中没有稳定的用户标识，为此额外调百度用户接口
+        换 uid 会新增上游依赖；同时多账号并存本身是合法场景。
+        """
+        if self.source == SOURCE_REAUTH:
+            return self.async_update_reload_and_abort(
+                self._get_reauth_entry(), data=data
+            )
         return self.async_create_entry(title="XiaoDu", data=data)
 
     async def async_step_reauth(

@@ -3,11 +3,16 @@ from __future__ import annotations
 
 import logging
 
-from aiohttp import ClientError, ClientResponseError
+from aiohttp import ClientError
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
+from homeassistant.exceptions import (
+    ConfigEntryAuthFailed,
+    ConfigEntryNotReady,
+    OAuth2TokenRequestError,
+    OAuth2TokenRequestReauthError,
+)
 from homeassistant.helpers import config_entry_oauth2_flow
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import entity_registry as er
@@ -52,15 +57,20 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
     try:
         await oauth_session.async_ensure_token_valid()
-    except ClientResponseError as err:
-        # 中转服务对 refresh_token 失效返回 400
-        if err.status in (400, 401, 403):
-            raise ConfigEntryAuthFailed("授权已失效，请重新授权") from err
-        raise ConfigEntryNotReady(f"中转服务异常：{err}") from err
-    except ClientError as err:
-        raise ConfigEntryNotReady(f"无法连接中转服务：{err}") from err
+    except OAuth2TokenRequestReauthError as err:
+        # refresh_token 失效（中转服务返回 4xx），只能重新授权
+        raise ConfigEntryAuthFailed("授权已失效，请重新授权") from err
+    except (OAuth2TokenRequestError, ClientError) as err:
+        # 网络故障或中转服务 5xx，属可恢复错误
+        raise ConfigEntryNotReady(f"无法完成 token 刷新：{err}") from err
 
     async def _async_token() -> str:
+        """返回当前有效的 access_token。
+
+        这里刻意不捕获刷新异常：`OAuth2TokenRequestReauthError` 等必须原样冒泡到
+        coordinator，由 HA 原生分支区分「触发重新授权」与「稍后重试」。
+        一旦包装成本集成的异常类型，重新授权提示就再也不会出现。
+        """
         await oauth_session.async_ensure_token_valid()
         return oauth_session.token["access_token"]
 
